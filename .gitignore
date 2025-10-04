@@ -1,0 +1,15 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+
+# dbt
+dbt/omni_dbt/target/
+dbt/omni_dbt/dbt_packages/
+dbt/omni_dbt/logs/
+
+# creds
+*.json
+.env
+.env.*
