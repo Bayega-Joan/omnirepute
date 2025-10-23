@@ -39,19 +39,34 @@ def get_bearer(client_id, client_secret, user_agent):
     tok = r.json()["access_token"]
     return {"Authorization": f"bearer {tok}", "User-Agent": user_agent}
 
+def _as_state_dict(state):
+    # Fivetran prod may pass state as JSON string
+    if state is None:
+        return {}
+    if isinstance(state, dict):
+        return state
+    if isinstance(state, str):
+        try:
+            loaded = json.loads(state)
+            return loaded if isinstance(loaded, dict) else {}
+        except Exception:
+            return {}
+    # any other type -> empty
+    return {}
+
 def update(configuration: dict, state: dict):
     client_id     = configuration["client_id"]
     client_secret = configuration["client_secret"]
     user_agent    = configuration["user_agent"]
     brand_terms   = configuration.get("brand_terms", [])
-    subreddits    = configuration.get("subreddits", [])  # optional filter
+    subreddits    = configuration.get("subreddits", [])
     lookback_days = int(configuration.get("lookback_days", 7))
     page_limit    = int(configuration.get("page_limit", 30))
 
     headers = get_bearer(client_id, client_secret, user_agent)
 
     now = datetime.now(timezone.utc)
-    state = state or {}
+    state = _as_state_dict(state)
     cursors = state.get("cursors", {})  # per term ISO
 
     log.info("connector start: Reddit posts")

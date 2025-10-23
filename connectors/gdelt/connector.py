@@ -67,6 +67,22 @@ def _make_session(user_agent: str):
     s.mount("https://", adapter)
     return s
 
+def _as_state_dict(state):
+    # Fivetran prod may pass state as JSON string
+    if state is None:
+        return {}
+    if isinstance(state, dict):
+        return state
+    if isinstance(state, str):
+        try:
+            loaded = json.loads(state)
+            return loaded if isinstance(loaded, dict) else {}
+        except Exception:
+            return {}
+    # any other type -> empty
+    return {}
+
+
 #Fivetran SDK: schema
 def schema(configuration: dict):
     return [{
@@ -108,7 +124,7 @@ def update(configuration: dict, state: dict):
     session = _make_session(user_agent)
 
     now = datetime.now(timezone.utc)
-    state = state or {}
+    state = _as_state_dict(state)
     cursor_iso = state.get("last_ts_utc")
     if cursor_iso:
         since = datetime.fromisoformat(cursor_iso.replace("Z", "+00:00"))
