@@ -16,20 +16,20 @@ const BrandInputForm: React.FC<BrandInputFormProps> = ({ brandName, setBrandName
 
     return (
         <form onSubmit={handleSubmit} className="w-full max-w-2xl mx-auto">
-            <div className="flex flex-col sm:flex-row gap-2 items-center bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-lg p-2 shadow-lg">
+            <div className="flex flex-col sm:flex-row gap-2 items-center glass-effect rounded-lg p-2 shadow-lg hover-lift">
                 <input
                     type="text"
                     value={brandName}
                     onChange={(e) => setBrandName(e.target.value)}
-                    placeholder="Enter a brand name (e.g., Tesla, Apple)"
-                    className="w-full flex-grow bg-transparent text-lg text-white placeholder-gray-500 focus:outline-none px-4 py-2"
+                    placeholder="Enter a brand name (e.g., Tesla, Apple, Google)"
+                    className="w-full flex-grow bg-gray-800/50 border border-gray-600 text-lg text-white placeholder-gray-400 focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/30 px-4 py-2 rounded-md transition-all duration-200"
                     aria-label="Brand Name"
                     disabled={isLoading}
                 />
                 <button
                     type="submit"
                     disabled={isLoading}
-                    className="w-full sm:w-auto flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-cyan-600 hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-cyan-500 disabled:bg-gray-600 disabled:cursor-not-allowed transition-colors duration-200"
+                    className="w-full sm:w-auto flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-cyan-500 disabled:bg-gray-600 disabled:cursor-not-allowed transition-all duration-200 shadow-lg hover:shadow-cyan-500/25"
                 >
                     {isLoading ? (
                         <>

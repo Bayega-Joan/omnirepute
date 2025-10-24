@@ -7,12 +7,13 @@ const { GoogleGenAI, Type } = require('@google/genai');
 const app = express();
 const port = process.env.PORT || 3001;
 
-
 const allowedOrigins = [
-    'http://localhost:3000', //local React dev
-    'http://localhost:5173', // local Vite dev 
-    'http://127.0.0.1:5173', // local Vite dev
-    'https://your-gcp-project-id.web.app' // Firebase
+    'http://localhost:3000',
+    'http://localhost:5173',
+    'http://localhost:5174',
+    'http://127.0.0.1:5173',
+    'http://127.0.0.1:5174',
+    'https://your-gcp-project-id.web.app'
 ];
 
 const corsOptions = {
@@ -26,13 +27,25 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-
 app.use(express.json());
 
-const bigquery = new BigQuery({ projectId: process.env.GCP_PROJECT_ID });
+// Health check endpoint
+app.get('/api/health', (req, res) => {
+    res.status(200).json({ 
+        status: 'healthy', 
+        timestamp: new Date().toISOString(),
+        service: 'omnirepute-backend'
+    });
+});
+
+const bigqueryOptions = { projectId: process.env.GCP_PROJECT_ID };
+if (process.env.GOOGLE_APPLICATION_CREDENTIALS) {
+    bigqueryOptions.keyFilename = process.env.GOOGLE_APPLICATION_CREDENTIALS;
+}
+
+const bigquery = new BigQuery(bigqueryOptions);
 const ai = new GoogleGenAI({ apiKey: process.env.API_KEY, vertexai: true });
 
-// the Gemini API response structure
 const responseSchema = {
     type: Type.OBJECT,
     properties: {
@@ -87,7 +100,6 @@ const responseSchema = {
     required: ['reputationScore', 'scoreRationale', 'keyInsights', 'improvementStrategies', 'whatUsersLove', 'whatUsersHate', 'complaintResponses']
 };
 
-// The main analysis endpoint
 app.post('/api/analyze', async (req, res) => {
     const { brandName, source } = req.body;
 
@@ -98,7 +110,6 @@ app.post('/api/analyze', async (req, res) => {
     console.log(`Starting analysis for brand: "${brandName}" from source: "${source}"`);
 
     try {
-        // 1. Query BigQuery to get a sample of mentions
         console.log('Querying BigQuery for data sample...');
         const query = `
             SELECT
@@ -108,7 +119,7 @@ app.post('/api/analyze', async (req, res) => {
             WHERE
                 brand = @brandName
                 ${source !== 'all' ? "AND source = @source" : ""}
-            LIMIT 700; -- Get a representative sample to avoid huge data transfer
+            LIMIT 700;
         `;
 
         const options = {
@@ -124,13 +135,12 @@ app.post('/api/analyze', async (req, res) => {
             return res.status(404).json({ message: `No data found for "${brandName}" from source "${source}".` });
         }
 
-        // 2. Call Gemini API with the data for analysis
         console.log('Sending data to Gemini for analysis...');
         const analysisPrompt = `
             Based on the following sample of ${rows.length} public mentions for the brand "${brandName}" from the "${source}" source, please perform a comprehensive brand reputation analysis.
             
             Data Sample:
-            ${JSON.stringify(rows.slice(0, 50))} // Send a smaller slice to fit within prompt limits
+            ${JSON.stringify(rows.slice(0, 50))}
 
             Please provide your analysis in the required JSON format.
         `;
