@@ -46,16 +46,13 @@ check_docker() {
 
 # Function to check if .env file exists
 check_env_file() {
-    if [ ! -f ".env" ]; then
-        print_warning ".env file not found. Creating from .env.example..."
-        if [ -f ".env.example" ]; then
-            cp .env.example .env
-            print_warning "Please edit .env file with your actual configuration values"
-            print_warning "Required variables: GCP_PROJECT_ID, API_KEY"
-        else
-            print_error ".env.example file not found. Please create .env file manually."
-            exit 1
-        fi
+    if [ ! -f "omni-repute-backend/.env" ]; then
+        print_warning ".env file not found in omni-repute-backend directory."
+        print_warning "Please run ./setup-prod.sh setup to create the .env file"
+        print_error "Required: Run ./setup-prod.sh setup first to configure the environment"
+        exit 1
+    else
+        print_success ".env file found in omni-repute-backend directory"
     fi
 }
 
@@ -161,6 +158,9 @@ show_help() {
     echo "  update    Update and restart the application"
     echo "  cleanup   Stop application and clean up Docker resources"
     echo "  help      Show this help message"
+    echo ""
+    echo "Prerequisites:"
+    echo "  Run ./setup-prod.sh setup first to configure environment variables"
     echo ""
     echo "Examples:"
     echo "  $0 start"
