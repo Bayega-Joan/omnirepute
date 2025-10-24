@@ -17,3 +17,8 @@ gcp-credentials.json
 
 # nginx configs (server-specific)
 nginx-omnirepute-samuelninsiima.conf
+
+# Node modules
+node_modules/
+src/node_modules/
+omni-repute-backend/node_modules/
