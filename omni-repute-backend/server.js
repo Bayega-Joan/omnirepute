@@ -44,7 +44,7 @@ if (process.env.GOOGLE_APPLICATION_CREDENTIALS) {
 }
 
 const bigquery = new BigQuery(bigqueryOptions);
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY, vertexai: true });
+const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
 const responseSchema = {
     type: Type.OBJECT,
@@ -113,13 +113,8 @@ app.post('/api/analyze', async (req, res) => {
         console.log('Querying BigQuery for data sample...');
         const query = `
             SELECT
-                source,
-                full_text
-            FROM \`omnirepute.omnirepute_curated_omnirepute_curated.brand_mentions\`
-            WHERE
-                brand = @brandName
-                ${source !== 'all' ? "AND source = @source" : ""}
-            LIMIT 700;
+                *
+            FROM \`omnirepute.omnirepute_curated_omnirepute_curated.brand_mentions\`;
         `;
 
         const options = {
@@ -146,7 +141,7 @@ app.post('/api/analyze', async (req, res) => {
         `;
 
         const result = await ai.models.generateContent({
-            model: 'gemini-2.5-flash',
+            model: 'gemini-2.0-flash-exp',
             contents: { role: 'user', parts: [{ text: analysisPrompt }] },
             config: {
                 responseMimeType: 'application/json',

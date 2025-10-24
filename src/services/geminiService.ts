@@ -9,8 +9,8 @@ import { AnalysisResult, DataSource } from '../types';
  */
 export const fetchBrandAnalysis = async (brandName: string, source: DataSource): Promise<AnalysisResult> => {
 
-    const localApiUrl = 'http://localhost:3002/api/analyze';
-    const productionApiUrl = 'https://my-cloud-run-service-url/api/analyze';
+    const localApiUrl = 'http://localhost:3001/api/analyze';
+    const productionApiUrl = 'https://omnirepute.samuelninsiima.com/3001/api/analyze';
 
     const backendUrl = window.location.hostname === 'localhost' ? localApiUrl : productionApiUrl;
     

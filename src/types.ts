@@ -1,5 +1,4 @@
-
-export type DataSource = 'all' | 'reddit' | 'gdelt';
+export type DataSource = 'all' | 'reddit' | 'gdelt' | 'twitter' | 'youtube';
 
 export interface AnalysisResult {
   reputationScore: number;

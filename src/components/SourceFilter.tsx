@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { DataSource } from '../types';
 
@@ -6,6 +5,8 @@ const sources: { id: DataSource; name: string }[] = [
     { id: 'all', name: 'All Sources' },
     { id: 'reddit', name: 'Reddit' },
     { id: 'gdelt', name: 'GDELT' },
+    { id: 'twitter', name: 'Twitter' },
+    { id: 'youtube', name: 'YouTube' },
 ];
 
 interface SourceFilterProps {
