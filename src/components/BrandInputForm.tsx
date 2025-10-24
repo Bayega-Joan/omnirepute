@@ -22,7 +22,7 @@ const BrandInputForm: React.FC<BrandInputFormProps> = ({ brandName, setBrandName
                     value={brandName}
                     onChange={(e) => setBrandName(e.target.value)}
                     placeholder="Enter a brand name (e.g., Tesla, Apple, Google)"
-                    className="w-full flex-grow bg-transparent text-lg text-white placeholder-gray-500 focus:outline-none px-4 py-2 focus:ring-2 focus:ring-cyan-500/50 rounded-md transition-all duration-200"
+                    className="w-full flex-grow bg-gray-800/50 border border-gray-600 text-lg text-white placeholder-gray-400 focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/30 px-4 py-2 rounded-md transition-all duration-200"
                     aria-label="Brand Name"
                     disabled={isLoading}
                 />
