@@ -11,5 +11,6 @@ dbt/omni_dbt/logs/
 
 # creds
 *.json
+gcp-credentials.json
 .env
 .env.*

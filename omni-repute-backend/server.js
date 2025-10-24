@@ -29,7 +29,22 @@ app.use(cors(corsOptions));
 
 app.use(express.json());
 
-const bigquery = new BigQuery({ projectId: process.env.GCP_PROJECT_ID });
+// Health check endpoint
+app.get('/api/health', (req, res) => {
+    res.status(200).json({ 
+        status: 'healthy', 
+        timestamp: new Date().toISOString(),
+        service: 'omnirepute-backend'
+    });
+});
+
+// Initialize BigQuery with credentials
+const bigqueryOptions = { projectId: process.env.GCP_PROJECT_ID };
+if (process.env.GOOGLE_APPLICATION_CREDENTIALS) {
+    bigqueryOptions.keyFilename = process.env.GOOGLE_APPLICATION_CREDENTIALS;
+}
+
+const bigquery = new BigQuery(bigqueryOptions);
 const ai = new GoogleGenAI({ apiKey: process.env.API_KEY, vertexai: true });
 
 // the Gemini API response structure

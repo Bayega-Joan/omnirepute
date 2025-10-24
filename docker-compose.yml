@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./omni-repute-backend
+      dockerfile: Dockerfile
+    container_name: omnirepute-backend
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+      - PORT=3001
+    env_file:
+      - .env
+    volumes:
+      - ./gcp-credentials.json:/app/gcp-credentials.json:ro
+    expose:
+      - "3001"
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:3001/api/health', (res) => { process.exit(res.statusCode === 200 ? 0 : 1) })"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - omnirepute-network
+
+  frontend:
+    build:
+      context: ./src
+      dockerfile: Dockerfile
+    container_name: omnirepute-frontend
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks:
+      - omnirepute-network
+
+networks:
+  omnirepute-network:
+    driver: bridge
+
+volumes:
+  backend_logs:
+  frontend_logs:
