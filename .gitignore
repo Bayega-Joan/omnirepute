@@ -14,3 +14,6 @@ dbt/omni_dbt/logs/
 gcp-credentials.json
 .env
 .env.*
+
+# nginx configs (server-specific)
+nginx-omnirepute-samuelninsiima.conf

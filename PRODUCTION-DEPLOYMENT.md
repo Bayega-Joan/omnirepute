@@ -76,7 +76,7 @@ sudo systemctl reload nginx
 
 ```bash
 # Check if containers are running
-docker-compose ps
+docker compose ps
 
 # Test backend health
 curl http://localhost:3001/api/health
@@ -217,11 +217,11 @@ ALLOWED_ORIGINS=https://yourdomain.com,http://localhost:3000
 3. **Container Issues**
    ```bash
    # Check container logs
-   docker-compose logs backend
-   docker-compose logs frontend
+   docker compose logs backend
+   docker compose logs frontend
    
    # Restart specific service
-   docker-compose restart backend
+   docker compose restart backend
    ```
 
 4. **CORS Issues**
@@ -230,7 +230,7 @@ ALLOWED_ORIGINS=https://yourdomain.com,http://localhost:3000
    nano .env
    
    # Restart backend
-   docker-compose restart backend
+   docker compose restart backend
    ```
 
 ### Health Checks
@@ -251,7 +251,7 @@ curl http://your-domain.com/api/health
 ### Log Files
 
 - **Nginx**: `/var/log/nginx/omnirepute_access.log`
-- **Application**: `docker-compose logs`
+- **Application**: `docker compose logs`
 - **System**: `/var/log/syslog`
 
 ### Monitoring Commands
@@ -261,10 +261,10 @@ curl http://your-domain.com/api/health
 docker stats
 
 # Check container health
-docker-compose ps
+docker compose ps
 
 # Monitor logs in real-time
-docker-compose logs -f
+docker compose logs -f
 ```
 
 ## Security Considerations

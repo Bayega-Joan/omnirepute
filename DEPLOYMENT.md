@@ -66,23 +66,23 @@ Required variables in `.env`:
 
 ### Check Service Status
 ```bash
-docker-compose ps
+docker compose ps
 ```
 
 ### View Detailed Logs
 ```bash
-docker-compose logs -f
+docker compose logs -f
 ```
 
 ### Restart Specific Service
 ```bash
-docker-compose restart backend
-docker-compose restart frontend
+docker compose restart backend
+docker compose restart frontend
 ```
 
 ### Rebuild Services
 ```bash
-docker-compose up --build -d
+docker compose up --build -d
 ```
 
 ## Deploying with Existing Nginx

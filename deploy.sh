@@ -36,8 +36,8 @@ check_docker() {
         exit 1
     fi
     
-    if ! command -v docker-compose &> /dev/null; then
-        print_error "Docker Compose is not installed. Please install Docker Compose first."
+    if ! docker compose version &> /dev/null; then
+        print_error "Docker Compose is not available. Please ensure Docker Compose is installed."
         exit 1
     fi
     
@@ -62,7 +62,7 @@ check_env_file() {
 # Function to stop and remove containers
 stop_app() {
     print_status "Stopping OmniRepute application..."
-    docker-compose down --remove-orphans
+    docker compose down --remove-orphans
     print_success "Application stopped successfully"
 }
 
@@ -71,10 +71,10 @@ start_app() {
     print_status "Building and starting OmniRepute application..."
     
     # Pull latest images if needed
-    docker-compose pull --ignore-pull-failures
+    docker compose pull --ignore-pull-failures
     
     # Build and start services
-    docker-compose up --build -d
+    docker compose up --build -d
     
     print_success "Application started successfully"
     print_status "Services are starting up..."
@@ -84,7 +84,7 @@ start_app() {
     sleep 10
     
     # Check service health
-    if docker-compose ps | grep -q "Up (healthy)"; then
+    if docker compose ps | grep -q "Up (healthy)"; then
         print_success "All services are healthy and running"
     else
         print_warning "Some services may still be starting up"
@@ -95,12 +95,12 @@ start_app() {
 show_status() {
     print_status "OmniRepute Application Status:"
     echo ""
-    docker-compose ps
+    docker compose ps
     echo ""
     
     # Show logs for the last 10 lines
     print_status "Recent logs:"
-    docker-compose logs --tail=10
+    docker compose logs --tail=10
 }
 
 # Function to show logs
@@ -108,10 +108,10 @@ show_logs() {
     local service=${1:-""}
     if [ -n "$service" ]; then
         print_status "Showing logs for $service service:"
-        docker-compose logs -f "$service"
+        docker compose logs -f "$service"
     else
         print_status "Showing logs for all services:"
-        docker-compose logs -f
+        docker compose logs -f
     fi
 }
 
@@ -140,7 +140,7 @@ update_app() {
 # Function to clean up Docker resources
 cleanup() {
     print_status "Cleaning up Docker resources..."
-    docker-compose down --volumes --remove-orphans
+    docker compose down --volumes --remove-orphans
     docker system prune -f
     print_success "Cleanup completed"
 }
