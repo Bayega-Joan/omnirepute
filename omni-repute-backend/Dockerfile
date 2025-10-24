@@ -12,6 +12,9 @@ RUN npm install --omit=dev
 # Copy source code
 COPY . .
 
+# Copy GCP credentials if they exist
+COPY gcp-credentials.json* ./
+
 # Create non-root user
 RUN addgroup -g 1001 -S nodejs
 RUN adduser -S nodejs -u 1001

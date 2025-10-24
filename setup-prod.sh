@@ -90,10 +90,10 @@ setup_new_gcp_credentials() {
         
         # Validate JSON
         if jq empty "$temp_file" 2>/dev/null; then
-            cp "$temp_file" "gcp-credentials.json"
+            cp "$temp_file" "omni-repute-backend/gcp-credentials.json"
             rm "$temp_file"
             GCP_CREDENTIALS_PATH="gcp-credentials.json"
-            print_success "GCP credentials saved to gcp-credentials.json"
+            print_success "GCP credentials saved to omni-repute-backend/gcp-credentials.json"
         else
             print_error "Invalid JSON format. Please try again."
             rm "$temp_file"
@@ -104,10 +104,10 @@ setup_new_gcp_credentials() {
         prompt_with_default "Path to your GCP credentials JSON file" "" "GCP_CREDENTIALS_PATH"
         
         if [ -n "$GCP_CREDENTIALS_PATH" ] && [ -f "$GCP_CREDENTIALS_PATH" ]; then
-            # Copy to project directory
-            cp "$GCP_CREDENTIALS_PATH" "gcp-credentials.json"
+            # Copy to backend directory
+            cp "$GCP_CREDENTIALS_PATH" "omni-repute-backend/gcp-credentials.json"
             GCP_CREDENTIALS_PATH="gcp-credentials.json"
-            print_success "GCP credentials copied to gcp-credentials.json"
+            print_success "GCP credentials copied to omni-repute-backend/gcp-credentials.json"
         else
             print_warning "File not found or path not provided. You'll need to add credentials manually."
             GCP_CREDENTIALS_PATH=""
@@ -123,10 +123,10 @@ setup_existing_gcp_credentials() {
     prompt_with_default "Path to your existing GCP credentials JSON file" "" "GCP_CREDENTIALS_PATH"
     
     if [ -n "$GCP_CREDENTIALS_PATH" ] && [ -f "$GCP_CREDENTIALS_PATH" ]; then
-        # Copy to project directory
-        cp "$GCP_CREDENTIALS_PATH" "gcp-credentials.json"
+        # Copy to backend directory
+        cp "$GCP_CREDENTIALS_PATH" "omni-repute-backend/gcp-credentials.json"
         GCP_CREDENTIALS_PATH="gcp-credentials.json"
-        print_success "GCP credentials copied to gcp-credentials.json"
+        print_success "GCP credentials copied to omni-repute-backend/gcp-credentials.json"
     else
         print_warning "File not found or path not provided. You'll need to add credentials manually."
         GCP_CREDENTIALS_PATH=""
@@ -138,9 +138,9 @@ create_env_file() {
     print_status "Setting up OmniRepute production environment..."
     echo ""
     
-    # Check if .env already exists
-    if [ -f ".env" ]; then
-        print_warning ".env file already exists."
+    # Check if .env already exists in backend directory
+    if [ -f "omni-repute-backend/.env" ]; then
+        print_warning ".env file already exists in omni-repute-backend directory."
         echo -n "Do you want to overwrite it? (y/N): "
         read overwrite
         if [[ ! "$overwrite" =~ ^[Yy]$ ]]; then
@@ -210,12 +210,12 @@ create_env_file() {
     echo "  - https://yourdomain.com,http://localhost:3000"
     echo ""
     
-    prompt_with_default "Allowed Origins" "http://localhost:3000,http://localhost:5173,http://127.0.0.1:5173" "ALLOWED_ORIGINS"
+    prompt_with_default "Allowed Origins" "https://omnirepute.samuelninsiima.com,http://localhost:3000,http://localhost:5173,http://127.0.0.1:5173" "ALLOWED_ORIGINS"
     
-    # Create .env file
-    print_status "Creating .env file..."
+    # Create .env file in backend directory
+    print_status "Creating .env file in omni-repute-backend directory..."
     
-    cat > .env << EOF
+    cat > omni-repute-backend/.env << EOF
 # OmniRepute Production Environment Configuration
 # Generated on $(date)
 
@@ -252,7 +252,7 @@ ALLOWED_ORIGINS=$ALLOWED_ORIGINS
 # LOG_FILE_PATH=/var/log/omnirepute/app.log
 EOF
 
-    print_success ".env file created successfully!"
+    print_success ".env file created successfully in omni-repute-backend directory!"
     echo ""
     
     # Show summary
@@ -282,7 +282,7 @@ EOF
     
     # Next steps
     print_status "Next Steps:"
-    echo "  1. Review the .env file: cat .env"
+    echo "  1. Review the .env file: cat omni-repute-backend/.env"
     echo "  2. Start the application: ./deploy.sh start"
     echo "  3. Check application status: ./deploy.sh status"
     echo "  4. View logs: ./deploy.sh logs"
@@ -292,13 +292,13 @@ EOF
 validate_config() {
     print_status "Validating configuration..."
     
-    if [ ! -f ".env" ]; then
-        print_error ".env file not found. Please run the setup script first."
+    if [ ! -f "omni-repute-backend/.env" ]; then
+        print_error ".env file not found in omni-repute-backend directory. Please run the setup script first."
         exit 1
     fi
     
     # Source the .env file
-    source .env
+    source omni-repute-backend/.env
     
     # Check required variables
     if [ -z "$GCP_PROJECT_ID" ]; then
@@ -312,8 +312,8 @@ validate_config() {
     fi
     
     # Check GCP credentials file
-    if [ -n "$GOOGLE_APPLICATION_CREDENTIALS" ] && [ ! -f "$GOOGLE_APPLICATION_CREDENTIALS" ]; then
-        print_warning "GCP credentials file not found: $GOOGLE_APPLICATION_CREDENTIALS"
+    if [ -n "$GOOGLE_APPLICATION_CREDENTIALS" ] && [ ! -f "omni-repute-backend/$GOOGLE_APPLICATION_CREDENTIALS" ]; then
+        print_warning "GCP credentials file not found: omni-repute-backend/$GOOGLE_APPLICATION_CREDENTIALS"
         print_warning "Make sure the file exists or run ./setup-prod.sh setup to configure it"
     fi
     
